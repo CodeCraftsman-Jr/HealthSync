@@ -1,0 +1,14 @@
+# Configuration file for dataset and model selection
+
+dataset: chest_xray # Options: chest_xray, isic, brain_mri
+# dataset_root: path/to/your/dataset # Uncomment to use a manually downloaded dataset
+
+model:
+  name: basic_cnn # Options: basic_cnn, resnet50, efficientnet
+  input_shape: [224, 224, 3]
+  num_classes: 2
+
+training:
+  batch_size: 32
+  epochs: 10
+  learning_rate: 0.0001
