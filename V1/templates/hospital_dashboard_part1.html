@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Dashboard - HealthSync</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            background-color: #343a40;
+            color: white;
+            min-height: 100vh;
+            padding-top: 1rem;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            margin: 0.2rem 0;
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: #0d6efd;
+        }
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+        }
+        .main-content {
+            padding: 2rem;
+        }
+        .dashboard-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .blood-type-badge {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            background-color: #dc3545;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+        }
+        .blood-level-critical {
+            background-color: #dc3545;
+        }
+        .blood-level-warning {
+            background-color: #ffc107;
+        }
+        .blood-level-good {
+            background-color: #198754;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="text-center mb-4">
+                    <h4>HealthSync</h4>
+                    <p>Hospital Portal</p>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#inventory">
+                            <i class="bi bi-droplet-fill"></i> Blood Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#requests">
+                            <i class="bi bi-clipboard-plus"></i> Blood Requests
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#donations">
+                            <i class="bi bi-heart-fill"></i> Donations
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#hospitals">
+                            <i class="bi bi-building"></i> Other Hospitals
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#profile">
+                            <i class="bi bi-person-fill"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item mt-5">
+                        <a class="nav-link text-danger" href="#" id="logoutBtn">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="section active">
+                    <div class="profile-header">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h2 id="hospitalName">City Hospital</h2>
+                                <p class="mb-0"><i class="bi bi-geo-alt-fill"></i> <span id="hospitalAddress">123 Medical Plaza, Healthcare City</span></p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <div class="mt-3">
+                                    <h4>Blood Bank Status</h4>
+                                    <span class="badge bg-success p-2" id="bankStatus">Operational</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Blood Units</h5>
+                                    <p class="display-4" id="totalUnits">42</p>
+                                    <p class="card-text">Units available in inventory</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Donations This Month</h5>
+                                    <p class="display-4" id="monthlyDonations">18</p>
+                                    <p class="card-text">Thank you to our donors!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-danger text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pending Requests</h5>
+                                    <p class="display-4" id="pendingRequests">3</p>
+                                    <p class="card-text">Blood requests awaiting fulfillment</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card dashboard-card mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">Blood Inventory Overview</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="bloodInventoryOverview">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="blood-type-badge">A+</div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <span>A Positive</span>
+                                                    <span>8 units</span>
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar blood-level-good" role="progressbar" style="width: 80%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="blood-type-badge">B+</div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <span>B Positive</span>
+                                                    <span>5 units</span>
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar blood-level-warning" role="progressbar" style="width: 50%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="blood-type-badge">O-</div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <span>O Negative</span>
+                                                    <span>2 units</span>
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar blood-level-critical" role="progressbar" style="width: 20%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <a href="#inventory" class="btn btn-outline-primary">View Full Inventory</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card dashboard-card mb-4">
+                                <div class="card-header bg-danger text-white">
+                                    <h5 class="mb-0">Recent Blood Requests</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recentRequests">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h6 class="mb-0">Emergency Surgery</h6>
+                                                <small class="text-muted">O- blood, 3 units</small>
+                                            </div>
+                                            <span class="badge bg-danger">Urgent</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h6 class="mb-0">Scheduled Procedure</h6>
+                                                <small class="text-muted">A+ blood, 2 units</small>
+                                            </div>
+                                            <span class="badge bg-warning">Medium</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-0">Routine Transfusion</h6>
+                                                <small class="text-muted">B+ blood, 1 unit</small>
+                                            </div>
+                                            <span class="badge bg-info">Low</span>
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <a href="#requests" class="btn btn-outline-danger">Manage Requests</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Dashboard - HealthSync</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            background-color: #343a40;
+            color: white;
+            min-height: 100vh;
+            padding-top: 1rem;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            margin: 0.2rem 0;
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: #0d6efd;
+        }
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+        }
+        .main-content {
+            padding: 2rem;
+        }
+        .dashboard-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .blood-type-badge {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            background-color: #dc3545;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+        }
+        .blood-level-critical {
+            background-color: #dc3545;
+        }
+        .blood-level-warning {
+            background-color: #ffc107;
+        }
+        .blood-level-good {
+            background-color: #198754;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="text-center mb-4">
+                    <h4>HealthSync</h4>
+                    <p>Hospital Portal</p>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#inventory">
+                            <i class="bi bi-droplet-fill"></i> Blood Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#requests">
+                            <i class="bi bi-clipboard-plus"></i> Blood Requests
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#donations">
+                            <i class="bi bi-heart-fill"></i> Donations
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#hospitals">
+                            <i class="bi bi-building"></i> Other Hospitals
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#profile">
+                            <i class="bi bi-person-fill"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item mt-5">
+                        <a class="nav-link text-danger" href="#" id="logoutBtn">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="section active">
+                    <div class="profile-header">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h2 id="hospitalName">City Hospital</h2>
+                                <p class="mb-0"><i class="bi bi-geo-alt-fill"></i> <span id="hospitalAddress">123 Medical Plaza, Healthcare City</span></p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <div class="mt-3">
+                                    <h4>Blood Bank Status</h4>
+                                    <span class="badge bg-success p-2" id="bankStatus">Operational</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Blood Units</h5>
+                                    <p class="display-4" id="totalUnits">42</p>
+                                    <p class="card-text">Units available in inventory</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Donations This Month</h5>
+                                    <p class="display-4" id="monthlyDonations">18</p>
+                                    <p class="card-text">Thank you to our donors!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-danger text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pending Requests</h5>
+                                    <p class="display-4" id="pendingRequests">3</p>
+                                    <p class="card-text">Blood requests awaiting fulfillment</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card dashboard-card mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">Blood Inventory Overview</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="bloodInventoryOverview">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="blood-type-badge">A+</div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <span>A Positive</span>
+                                                    <span>8 units</span>
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar blood-level-good" role="progressbar" style="width: 80%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="blood-type-badge">B+</div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <span>B Positive</span>
+                                                    <span>5 units</span>
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar blood-level-warning" role="progressbar" style="width: 50%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="blood-type-badge">O-</div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <span>O Negative</span>
+                                                    <span>2 units</span>
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar blood-level-critical" role="progressbar" style="width: 20%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <a href="#inventory" class="btn btn-outline-primary">View Full Inventory</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card dashboard-card mb-4">
+                                <div class="card-header bg-danger text-white">
+                                    <h5 class="mb-0">Recent Blood Requests</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recentRequests">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h6 class="mb-0">Emergency Surgery</h6>
+                                                <small class="text-muted">O- blood, 3 units</small>
+                                            </div>
+                                            <span class="badge bg-danger">Urgent</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h6 class="mb-0">Scheduled Procedure</h6>
+                                                <small class="text-muted">A+ blood, 2 units</small>
+                                            </div>
+                                            <span class="badge bg-warning">Medium</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-0">Routine Transfusion</h6>
+                                                <small class="text-muted">B+ blood, 1 unit</small>
+                                            </div>
+                                            <span class="badge bg-info">Low</span>
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <a href="#requests" class="btn btn-outline-danger">Manage Requests</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<!-- Blood Inventory Section -->
+<div id="inventory" class="section d-none">
+    <h2 class="mb-4">Blood Inventory Management</h2>
+    
+    <!-- Add Blood to Inventory Form -->
+    <div class="card dashboard-card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Add Blood to Inventory</h5>
+        </div>
+        <div class="card-body">
+            <form id="addBloodForm">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="bloodType" class="form-label">Blood Type</label>
+                        <select class="form-select" id="bloodType" required>
+                            <option value="" selected disabled>Select Blood Type</option>
+                            <option value="A_POSITIVE">A+</option>
+                            <option value="A_NEGATIVE">A-</option>
+                            <option value="B_POSITIVE">B+</option>
+                            <option value="B_NEGATIVE">B-</option>
+                            <option value="AB_POSITIVE">AB+</option>
+                            <option value="AB_NEGATIVE">AB-</option>
+                            <option value="O_POSITIVE">O+</option>
+                            <option value="O_NEGATIVE">O-</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="quantity" class="form-label">Quantity (ml)</label>
+                        <input type="number" class="form-control" id="quantity" min="100" step="50" value="450" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="expiryDate" class="form-label">Expiry Date</label>
+                        <input type="date" class="form-control" id="expiryDate" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="source" class="form-label">Source</label>
+                    <select class="form-select" id="source">
+                        <option value="donation">Donation</option>
+                        <option value="purchase">Purchase</option>
+                        <option value="transfer">Transfer from another hospital</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add to Inventory</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Current Inventory Table -->
+    <div class="card dashboard-card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Current Inventory</h5>
+            <button class="btn btn-sm btn-light" id="refreshInventory">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Blood Type</th>
+                            <th>Quantity (ml)</th>
+                            <th>Units</th>
+                            <th>Status</th>
+                            <th>Expiring Soon</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTable">
+                        <!-- Will be populated dynamically -->
+                        <tr>
+                            <td><span class="blood-type-badge">A+</span> A Positive</td>
+                            <td>3600 ml</td>
+                            <td>8 units</td>
+                            <td><span class="badge bg-success">Good</span></td>
+                            <td>1 unit (2 days)</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="blood-type-badge">B+</span> B Positive</td>
+                            <td>2250 ml</td>
+                            <td>5 units</td>
+                            <td><span class="badge bg-warning">Low</span></td>
+                            <td>None</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="blood-type-badge">O-</span> O Negative</td>
+                            <td>900 ml</td>
+                            <td>2 units</td>
+                            <td><span class="badge bg-danger">Critical</span></td>
+                            <td>None</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Blood Requests Section -->
+<div id="requests" class="section d-none">
+    <h2 class="mb-4">Blood Requests Management</h2>
+    
+    <!-- Create Blood Request Form -->
+    <div class="card dashboard-card mb-4">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Create New Blood Request</h5>
+        </div>
+        <div class="card-body">
+            <form id="createRequestForm">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="requestBloodType" class="form-label">Blood Type</label>
+                        <select class="form-select" id="requestBloodType" required>
+                            <option value="" selected disabled>Select Blood Type</option>
+                            <option value="A_POSITIVE">A+</option>
+                            <option value="A_NEGATIVE">A-</option>
+                            <option value="B_POSITIVE">B+</option>
+                            <option value="B_NEGATIVE">B-</option>
+                            <option value="AB_POSITIVE">AB+</option>
+                            <option value="AB_NEGATIVE">AB-</option>
+                            <option value="O_POSITIVE">O+</option>
+                            <option value="O_NEGATIVE">O-</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="requestQuantity" class="form-label">Quantity (ml)</label>
+                        <input type="number" class="form-control" id="requestQuantity" min="100" step="50" value="450" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="urgencyLevel" class="form-label">Urgency Level</label>
+                        <select class="form-select" id="urgencyLevel" required>
+                            <option value="1">Low (1)</option>
+                            <option value="2">Medium-Low (2)</option>
+                            <option value="3" selected>Medium (3)</option>
+                            <option value="4">High (4)</option>
+                            <option value="5">Critical (5)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="requestPurpose" class="form-label">Purpose</label>
+                    <input type="text" class="form-control" id="requestPurpose" placeholder="e.g., Surgery, Transfusion, etc.">
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="notifyDonors">
+                    <label class="form-check-label" for="notifyDonors">Notify eligible donors (for urgency levels 4-5)</label>
+                </div>
+                <button type="submit" class="btn btn-danger">Create Request</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Blood Requests Table -->
+    <div class="card dashboard-card">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Current Requests</h5>
+            <div>
+                <select class="form-select form-select-sm d-inline-block w-auto me-2" id="requestFilter">
+                    <option value="all" selected>All Requests</option>
+                    <option value="pending">Pending</option>
+                    <option value="fulfilled">Fulfilled</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <button class="btn btn-sm btn-light" id="refreshRequests">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Blood Type</th>
+                            <th>Quantity</th>
+                            <th>Urgency</th>
+                            <th>Request Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTable">
+                        <!-- Will be populated dynamically -->
+                        <tr>
+                            <td>#1001</td>
+                            <td><span class="blood-type-badge">O-</span> O Negative</td>
+                            <td>900 ml (2 units)</td>
+                            <td><span class="badge bg-danger">Critical (5)</span></td>
+                            <td>May 12, 2025</td>
+                            <td><span class="badge bg-warning">Pending</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-success">Fulfill</button>
+                                <button class="btn btn-sm btn-danger">Cancel</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#1000</td>
+                            <td><span class="blood-type-badge">A+</span> A Positive</td>
+                            <td>450 ml (1 unit)</td>
+                            <td><span class="badge bg-warning">Medium (3)</span></td>
+                            <td>May 10, 2025</td>
+                            <td><span class="badge bg-success">Fulfilled</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary">Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Donations Section -->
+<div id="donations" class="section d-none">
+    <h2 class="mb-4">Donation Management</h2>
+    
+    <!-- Donation Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card dashboard-card bg-success text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Donations</h5>
+                    <p class="display-4" id="totalDonationsCount">156</p>
+                    <p class="card-text">All-time donations</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card dashboard-card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">This Month</h5>
+                    <p class="display-4" id="monthDonationsCount">18</p>
+                    <p class="card-text">Donations in May 2025</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card dashboard-card bg-info text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Unique Donors</h5>
+                    <p class="display-4" id="uniqueDonorsCount">87</p>
+                    <p class="card-text">Individual donors</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Record Manual Donation -->
+    <div class="card dashboard-card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Record Manual Donation</h5>
+        </div>
+        <div class="card-body">
+            <form id="recordDonationForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="donorName" class="form-label">Donor Name</label>
+                        <input type="text" class="form-control" id="donorName" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="donorBloodType" class="form-label">Blood Type</label>
+                        <select class="form-select" id="donorBloodType" required>
+                            <option value="" selected disabled>Select Blood Type</option>
+                            <option value="A_POSITIVE">A+</option>
+                            <option value="A_NEGATIVE">A-</option>
+                            <option value="B_POSITIVE">B+</option>
+                            <option value="B_NEGATIVE">B-</option>
+                            <option value="AB_POSITIVE">AB+</option>
+                            <option value="AB_NEGATIVE">AB-</option>
+                            <option value="O_POSITIVE">O+</option>
+                            <option value="O_NEGATIVE">O-</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="donationQuantity" class="form-label">Quantity (ml)</label>
+                        <input type="number" class="form-control" id="donationQuantity" min="100" step="50" value="450" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="donationDate" class="form-label">Donation Date</label>
+                        <input type="date" class="form-control" id="donationDate" required>
+                    </div>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="registerDonor">
+                    <label class="form-check-label" for="registerDonor">Register as new donor in system</label>
+                </div>
+                <button type="submit" class="btn btn-success">Record Donation</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Recent Donations Table -->
+    <div class="card dashboard-card">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Recent Donations</h5>
+            <button class="btn btn-sm btn-light" id="refreshDonations">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Donor</th>
+                            <th>Blood Type</th>
+                            <th>Quantity</th>
+                            <th>Donation Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donationsTable">
+                        <!-- Will be populated dynamically -->
+                        <tr>
+                            <td>John Smith</td>
+                            <td><span class="blood-type-badge">A+</span> A Positive</td>
+                            <td>450 ml (1 unit)</td>
+                            <td>May 12, 2025</td>
+                            <td><span class="badge bg-success">Processed</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sarah Johnson</td>
+                            <td><span class="blood-type-badge">O-</span> O Negative</td>
+                            <td>450 ml (1 unit)</td>
+                            <td>May 11, 2025</td>
+                            <td><span class="badge bg-success">Processed</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Michael Brown</td>
+                            <td><span class="blood-type-badge">B+</span> B Positive</td>
+                            <td>450 ml (1 unit)</td>
+                            <td>May 10, 2025</td>
+                            <td><span class="badge bg-success">Processed</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary">Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-3">
+                <button class="btn btn-outline-success" id="loadMoreDonations">Load More</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Other Hospitals Section -->
+<div id="hospitals" class="section d-none">
+    <h2 class="mb-4">Hospital Network</h2>
+    
+    <!-- Blood Exchange Network -->
+    <div class="card dashboard-card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Blood Exchange Network</h5>
+        </div>
+        <div class="card-body">
+            <p>Connect with other hospitals to request or provide blood when needed.</p>
+            
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Hospital</th>
+                            <th>Distance</th>
+                            <th>Available Blood Types</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hospitalsTable">
+                        <!-- Will be populated dynamically -->
+                        <tr>
+                            <td>General Hospital</td>
+                            <td>3.2 miles</td>
+                            <td>
+                                <span class="badge bg-danger">A+</span>
+                                <span class="badge bg-danger">B+</span>
+                                <span class="badge bg-danger">O+</span>
+                            </td>
+                            <td><span class="badge bg-success">Online</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary">Request Blood</button>
+                                <button class="btn btn-sm btn-outline-primary">View Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Community Medical Center</td>
+                            <td>5.7 miles</td>
+                            <td>
+                                <span class="badge bg-danger">A-</span>
+                                <span class="badge bg-danger">O-</span>
+                                <span class="badge bg-danger">AB+</span>
+                            </td>
+                            <td><span class="badge bg-success">Online</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary">Request Blood</button>
+                                <button class="btn btn-sm btn-outline-primary">View Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>University Hospital</td>
+                            <td>8.4 miles</td>
+                            <td>
+                                <span class="badge bg-danger">All Types</span>
+                            </td>
+                            <td><span class="badge bg-success">Online</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary">Request Blood</button>
+                                <button class="btn btn-sm btn-outline-primary">View Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Blood Exchange Requests -->
+    <div class="card dashboard-card">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Blood Exchange Requests</h5>
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-tabs mb-3" id="exchangeTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="incoming-tab" data-bs-toggle="tab" data-bs-target="#incoming" type="button" role="tab">Incoming Requests</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="outgoing-tab" data-bs-toggle="tab" data-bs-target="#outgoing" type="button" role="tab">Outgoing Requests</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">History</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="exchangeTabContent">
+                <div class="tab-pane fade show active" id="incoming" role="tabpanel">
+                    <div class="alert alert-info mb-3">
+                        You have 2 incoming blood requests from other hospitals.
+                    </div>
+                    <div class="list-group">
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">General Hospital</h5>
+                                <small class="text-muted">2 hours ago</small>
+                            </div>
+                            <p class="mb-1">Requesting 2 units of A+ blood for emergency surgery</p>
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-sm btn-success me-2">Approve</button>
+                                <button class="btn btn-sm btn-danger">Decline</button>
+                            </div>
+                        </div>
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Community Medical Center</h5>
+                                <small class="text-muted">5 hours ago</small>
+                            </div>
+                            <p class="mb-1">Requesting 1 unit of O- blood for emergency transfusion</p>
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-sm btn-success me-2">Approve</button>
+                                <button class="btn btn-sm btn-danger">Decline</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="outgoing" role="tabpanel">
+                    <div class="alert alert-warning mb-3">
+                        You have 1 pending outgoing request.
+                    </div>
+                    <div class="list-group">
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">University Hospital</h5>
+                                <small class="text-muted">1 hour ago</small>
+                            </div>
+                            <p class="mb-1">Requested 3 units of B+ blood</p>
+                            <small class="text-muted">Status: <span class="badge bg-warning">Pending</span></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="history" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Hospital</th>
+                                    <th>Type</th>
+                                    <th>Blood Type</th>
+                                    <th>Quantity</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>May 10, 2025</td>
+                                    <td>General Hospital</td>
+                                    <td>Incoming</td>
+                                    <td>A+</td>
+                                    <td>2 units</td>
+                                    <td><span class="badge bg-success">Approved</span></td>
+                                </tr>
+                                <tr>
+                                    <td>May 8, 2025</td>
+                                    <td>University Hospital</td>
+                                    <td>Outgoing</td>
+                                    <td>O-</td>
+                                    <td>1 unit</td>
+                                    <td><span class="badge bg-success">Approved</span></td>
+                                </tr>
+                                <tr>
+                                    <td>May 5, 2025</td>
+                                    <td>Community Medical Center</td>
+                                    <td>Outgoing</td>
+                                    <td>B+</td>
+                                    <td>2 units</td>
+                                    <td><span class="badge bg-danger">Declined</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Section -->
+<div id="profile" class="section d-none">
+    <h2 class="mb-4">Hospital Profile</h2>
+    <div class="card dashboard-card">
+        <div class="card-body">
+            <form id="hospitalProfileForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="profileHospitalName" class="form-label">Hospital Name</label>
+                        <input type="text" class="form-control" id="profileHospitalName" value="City Hospital" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="profileContactNumber" class="form-label">Contact Number</label>
+                        <input type="tel" class="form-control" id="profileContactNumber" value="(555) 123-4567" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="profileAddress" class="form-label">Address</label>
+                    <textarea class="form-control" id="profileAddress" rows="2" required>123 Medical Plaza, Healthcare City</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="profileEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="profileEmail" value="info@cityhospital.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="profileDescription" class="form-label">Hospital Description</label>
+                    <textarea class="form-control" id="profileDescription" rows="3">City Hospital is a leading healthcare provider with state-of-the-art facilities and dedicated medical professionals.</textarea>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="bloodExchangeNetwork" checked>
+                    <label class="form-check-label" for="bloodExchangeNetwork">Participate in blood exchange network</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        const userType = localStorage.getItem('userType');
+        
+        if (!token || userType !== 'hospital') {
+            window.location.href = '/blood-bank';
+            return;
+        }
+        
+        // Set hospital name
+        const hospitalName = localStorage.getItem('userName');
+        if (hospitalName) {
+            document.getElementById('hospitalName').textContent = hospitalName;
+            document.getElementById('profileHospitalName').value = hospitalName;
+        }
+        
+        // Navigation
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#logoutBtn') {
+                    // Handle logout
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('userType');
+                    localStorage.removeItem('userName');
+                    window.location.href = '/blood-bank';
+                    return;
+                }
+                
+                const targetId = this.getAttribute('href').substring(1);
+                
+                // Hide all sections
+                sections.forEach(section => {
+                    section.classList.add('d-none');
+                });
+                
+                // Show target section
+                document.getElementById(targetId).classList.remove('d-none');
+                
+                // Update active link
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+        
+        // Set default expiry date (42 days from now)
+        const expiryDateInput = document.getElementById('expiryDate');
+        if (expiryDateInput) {
+            const defaultExpiry = new Date();
+            defaultExpiry.setDate(defaultExpiry.getDate() + 42);
+            expiryDateInput.value = defaultExpiry.toISOString().split('T')[0];
+        }
+        
+        // Set default donation date (today)
+        const donationDateInput = document.getElementById('donationDate');
+        if (donationDateInput) {
+            const today = new Date();
+            donationDateInput.value = today.toISOString().split('T')[0];
+        }
+        
+        // Add Blood Form Submission
+        const addBloodForm = document.getElementById('addBloodForm');
+        if (addBloodForm) {
+            addBloodForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    blood_type: document.getElementById('bloodType').value,
+                    quantity_ml: document.getElementById('quantity').value,
+                    expiry_date: document.getElementById('expiryDate').value
+                };
+                
+                fetch('/api/blood-bank/hospital/inventory/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Blood added to inventory successfully!');
+                        // Refresh inventory
+                        fetchInventory();
+                        // Reset form
+                        addBloodForm.reset();
+                        // Set default expiry date again
+                        const defaultExpiry = new Date();
+                        defaultExpiry.setDate(defaultExpiry.getDate() + 42);
+                        expiryDateInput.value = defaultExpiry.toISOString().split('T')[0];
+                    } else {
+                        alert(data.message || 'Failed to add blood to inventory');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to add blood to inventory. Please try again.');
+                });
+            });
+        }
+        
+        // Create Request Form Submission
+        const createRequestForm = document.getElementById('createRequestForm');
+        if (createRequestForm) {
+            createRequestForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    blood_type: document.getElementById('requestBloodType').value,
+                    quantity_ml: document.getElementById('requestQuantity').value,
+                    urgency_level: document.getElementById('urgencyLevel').value,
+                    purpose: document.getElementById('requestPurpose').value,
+                    notify_donors: document.getElementById('notifyDonors').checked
+                };
+                
+                fetch('/api/blood-bank/hospital/request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Blood request created successfully!');
+                        // Refresh requests
+                        fetchRequests();
+                        // Reset form
+                        createRequestForm.reset();
+                    } else {
+                        alert(data.message || 'Failed to create blood request');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to create blood request. Please try again.');
+                });
+            });
+        }
+        
+        // Record Donation Form Submission
+        const recordDonationForm = document.getElementById('recordDonationForm');
+        if (recordDonationForm) {
+            recordDonationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    donor_name: document.getElementById('donorName').value,
+                    blood_type: document.getElementById('donorBloodType').value,
+                    quantity_ml: document.getElementById('donationQuantity').value,
+                    donation_date: document.getElementById('donationDate').value,
+                    register_donor: document.getElementById('registerDonor').checked
+                };
+                
+                fetch('/api/blood-bank/hospital/donation/record', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Donation recorded successfully!');
+                        // Refresh donations
+                        fetchDonations();
+                        // Reset form
+                        recordDonationForm.reset();
+                        // Set default donation date again
+                        const today = new Date();
+                        donationDateInput.value = today.toISOString().split('T')[0];
+                    } else {
+                        alert(data.message || 'Failed to record donation');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to record donation. Please try again.');
+                });
+            });
+        }
+        
+        // Hospital Profile Form Submission
+        const hospitalProfileForm = document.getElementById('hospitalProfileForm');
+        if (hospitalProfileForm) {
+            hospitalProfileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    name: document.getElementById('profileHospitalName').value,
+                    address: document.getElementById('profileAddress').value,
+                    contact_number: document.getElementById('profileContactNumber').value,
+                    email: document.getElementById('profileEmail').value,
+                    description: document.getElementById('profileDescription').value,
+                    participate_in_exchange: document.getElementById('bloodExchangeNetwork').checked
+                };
+                
+                fetch('/api/blood-bank/hospital/profile/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Profile updated successfully!');
+                        // Update displayed name if it was changed
+                        if (formData.name !== hospitalName) {
+                            localStorage.setItem('userName', formData.name);
+                            document.getElementById('hospitalName').textContent = formData.name;
+                        }
+                    } else {
+                        alert(data.message || 'Failed to update profile');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to update profile. Please try again.');
+                });
+            });
+        }
+        
+        // Fetch functions (these would be implemented to get data from the API)
+        function fetchInventory() {
+            // Implementation would fetch from API
+            console.log('Fetching inventory...');
+        }
+        
+        function fetchRequests() {
+            // Implementation would fetch from API
+            console.log('Fetching requests...');
+        }
+        
+        function fetchDonations() {
+            // Implementation would fetch from API
+            console.log('Fetching donations...');
+        }
+    });
+</script>

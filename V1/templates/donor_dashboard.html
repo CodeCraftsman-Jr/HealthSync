@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard - HealthSync</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            background-color: #343a40;
+            color: white;
+            min-height: 100vh;
+            padding-top: 1rem;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            margin: 0.2rem 0;
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: #dc3545;
+        }
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+        }
+        .main-content {
+            padding: 2rem;
+        }
+        .dashboard-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .donation-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="text-center mb-4">
+                    <h4>HealthSync</h4>
+                    <p>Donor Portal</p>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#donate">
+                            <i class="bi bi-droplet-fill"></i> Donate Blood
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#history">
+                            <i class="bi bi-clock-history"></i> Donation History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#notifications">
+                            <i class="bi bi-bell-fill"></i> Notifications
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#profile">
+                            <i class="bi bi-person-fill"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item mt-5">
+                        <a class="nav-link text-danger" href="#" id="logoutBtn">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="section active">
+                    <div class="profile-header">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h2 id="donorName">Welcome, John Doe</h2>
+                                <p class="mb-1"><i class="bi bi-droplet-fill"></i> <span id="donorBloodType">A+</span></p>
+                                <p class="mb-0"><i class="bi bi-calendar-check"></i> Last donation: <span id="lastDonation">3 months ago</span></p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <div class="mt-3">
+                                    <h4>Donation Status</h4>
+                                    <span class="badge bg-success p-2" id="donorStatus">Eligible to donate</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Donations</h5>
+                                    <p class="display-4" id="totalDonations">5</p>
+                                    <p class="card-text">Thank you for saving lives!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Blood Volume Donated</h5>
+                                    <p class="display-4"><span id="totalVolume">2500</span> <small>ml</small></p>
+                                    <p class="card-text">That's approximately 5 donations!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card dashboard-card bg-info text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Lives Impacted</h5>
+                                    <p class="display-4" id="livesImpacted">15</p>
+                                    <p class="card-text">Each donation can save up to 3 lives</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card dashboard-card mb-4">
+                                <div class="card-header bg-danger text-white">
+                                    <h5 class="mb-0">Urgent Blood Requests</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="urgentRequests">
+                                        <div class="alert alert-danger">
+                                            <strong>City Hospital</strong> urgently needs A+ blood
+                                            <a href="#donate" class="btn btn-sm btn-outline-danger float-end">Donate</a>
+                                        </div>
+                                        <div class="alert alert-warning">
+                                            <strong>General Hospital</strong> needs A+ blood
+                                            <a href="#donate" class="btn btn-sm btn-outline-warning float-end">Donate</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card dashboard-card mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">Nearby Donation Centers</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="donationCenters">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h6 class="mb-0">City Hospital</h6>
+                                                <small class="text-muted">2.5 miles away</small>
+                                            </div>
+                                            <a href="#donate" class="btn btn-sm btn-primary">Select</a>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h6 class="mb-0">General Hospital</h6>
+                                                <small class="text-muted">4.2 miles away</small>
+                                            </div>
+                                            <a href="#donate" class="btn btn-sm btn-primary">Select</a>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-0">Community Blood Center</h6>
+                                                <small class="text-muted">5.7 miles away</small>
+                                            </div>
+                                            <a href="#donate" class="btn btn-sm btn-primary">Select</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other sections will be shown/hidden with JavaScript -->
+                <div id="donate" class="section d-none">
+                    <h2 class="mb-4">Donate Blood</h2>
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <form id="donationForm">
+                                <div class="mb-3">
+                                    <label for="hospitalSelect" class="form-label">Select Hospital</label>
+                                    <select class="form-select" id="hospitalSelect" required>
+                                        <option value="" selected disabled>Choose a hospital...</option>
+                                        <!-- Will be populated dynamically -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="donationDate" class="form-label">Donation Date</label>
+                                    <input type="date" class="form-control" id="donationDate" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="donationAmount" class="form-label">Donation Amount (ml)</label>
+                                    <input type="number" class="form-control" id="donationAmount" value="450" min="300" max="500" required>
+                                    <small class="text-muted">Standard donation is 450ml</small>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="healthDeclaration" required>
+                                    <label class="form-check-label" for="healthDeclaration">I declare that I am in good health and eligible to donate blood</label>
+                                </div>
+                                <button type="submit" class="btn btn-danger">Schedule Donation</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="history" class="section d-none">
+                    <h2 class="mb-4">Donation History</h2>
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Hospital</th>
+                                            <th>Amount (ml)</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="donationHistory">
+                                        <!-- Will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="notifications" class="section d-none">
+                    <h2 class="mb-4">Notifications</h2>
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <div id="notificationsList">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="profile" class="section d-none">
+                    <h2 class="mb-4">My Profile</h2>
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <form id="profileForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="profileName" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="profileName" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="profileBloodType" class="form-label">Blood Type</label>
+                                        <input type="text" class="form-control" id="profileBloodType" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profileAddress" class="form-label">Address</label>
+                                    <textarea class="form-control" id="profileAddress" rows="2" required></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="profileContact" class="form-label">Contact Number</label>
+                                        <input type="tel" class="form-control" id="profileContact" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="profileDOB" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="profileDOB" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profileEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="profileEmail" required>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="notificationConsent" checked>
+                                    <label class="form-check-label" for="notificationConsent">I consent to receive notifications about blood donation requests</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Profile</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const token = localStorage.getItem('token');
+            const userType = localStorage.getItem('userType');
+            
+            if (!token || userType !== 'donor') {
+                window.location.href = '/blood-bank';
+                return;
+            }
+            
+            // Set user name
+            const userName = localStorage.getItem('userName');
+            if (userName) {
+                document.getElementById('donorName').textContent = `Welcome, ${userName}`;
+            }
+            
+            // Navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#logoutBtn') {
+                        // Handle logout
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('userType');
+                        localStorage.removeItem('userName');
+                        window.location.href = '/blood-bank';
+                        return;
+                    }
+                    
+                    const targetId = this.getAttribute('href').substring(1);
+                    
+                    // Hide all sections
+                    sections.forEach(section => {
+                        section.classList.add('d-none');
+                    });
+                    
+                    // Show target section
+                    document.getElementById(targetId).classList.remove('d-none');
+                    
+                    // Update active link
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+            
+            // Fetch donor profile
+            fetch('/api/blood-bank/donor/profile', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update profile information
+                    document.getElementById('donorBloodType').textContent = data.donor.blood_type;
+                    document.getElementById('lastDonation').textContent = data.donor.last_donation_date ? 
+                        new Date(data.donor.last_donation_date).toLocaleDateString() : 'Never donated';
+                    
+                    // Update donation status
+                    const isEligible = data.donor.is_eligible;
+                    const statusBadge = document.getElementById('donorStatus');
+                    if (isEligible) {
+                        statusBadge.textContent = 'Eligible to donate';
+                        statusBadge.classList.remove('bg-danger');
+                        statusBadge.classList.add('bg-success');
+                    } else {
+                        statusBadge.textContent = 'Not eligible to donate';
+                        statusBadge.classList.remove('bg-success');
+                        statusBadge.classList.add('bg-danger');
+                    }
+                    
+                    // Fill profile form
+                    document.getElementById('profileName').value = data.donor.name;
+                    document.getElementById('profileBloodType').value = data.donor.blood_type;
+                    document.getElementById('profileAddress').value = data.donor.address;
+                    document.getElementById('profileContact').value = data.donor.contact_number;
+                    document.getElementById('profileDOB').value = new Date(data.donor.date_of_birth).toISOString().split('T')[0];
+                    document.getElementById('profileEmail').value = data.donor.email;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching profile:', error);
+            });
+            
+            // Fetch donation history
+            fetch('/api/blood-bank/donor/history', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update donation statistics
+                    document.getElementById('totalDonations').textContent = data.donations.length;
+                    
+                    let totalVolume = 0;
+                    data.donations.forEach(donation => {
+                        totalVolume += donation.quantity_ml;
+                    });
+                    document.getElementById('totalVolume').textContent = totalVolume;
+                    
+                    // Estimate lives impacted (3 lives per donation)
+                    document.getElementById('livesImpacted').textContent = data.donations.length * 3;
+                    
+                    // Fill donation history table
+                    const historyTable = document.getElementById('donationHistory');
+                    historyTable.innerHTML = '';
+                    
+                    if (data.donations.length === 0) {
+                        historyTable.innerHTML = '<tr><td colspan="4" class="text-center">No donation history yet</td></tr>';
+                    } else {
+                        data.donations.forEach(donation => {
+                            historyTable.innerHTML += `
+                                <tr>
+                                    <td>${new Date(donation.donation_date).toLocaleDateString()}</td>
+                                    <td>${donation.hospital_name}</td>
+                                    <td>${donation.quantity_ml} ml</td>
+                                    <td><span class="badge bg-success">Completed</span></td>
+                                </tr>
+                            `;
+                        });
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching donation history:', error);
+            });
+            
+            // Fetch hospitals for donation form
+            fetch('/api/blood-bank/hospitals')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const hospitalSelect = document.getElementById('hospitalSelect');
+                    
+                    data.hospitals.forEach(hospital => {
+                        const option = document.createElement('option');
+                        option.value = hospital.id;
+                        option.textContent = hospital.name;
+                        hospitalSelect.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching hospitals:', error);
+            });
+            
+            // Handle donation form submission
+            const donationForm = document.getElementById('donationForm');
+            donationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    hospital_id: document.getElementById('hospitalSelect').value,
+                    quantity_ml: document.getElementById('donationAmount').value
+                };
+                
+                fetch('/api/blood-bank/donor/donate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Donation scheduled successfully!');
+                        // Refresh the page to update statistics
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'Failed to schedule donation');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to schedule donation. Please try again.');
+                });
+            });
+            
+            // Handle profile form submission
+            const profileForm = document.getElementById('profileForm');
+            profileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    name: document.getElementById('profileName').value,
+                    address: document.getElementById('profileAddress').value,
+                    contact_number: document.getElementById('profileContact').value,
+                    email: document.getElementById('profileEmail').value,
+                    notification_consent: document.getElementById('notificationConsent').checked
+                };
+                
+                fetch('/api/blood-bank/donor/profile/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Profile updated successfully!');
+                        // Update displayed name if it was changed
+                        if (formData.name !== userName) {
+                            localStorage.setItem('userName', formData.name);
+                            document.getElementById('donorName').textContent = `Welcome, ${formData.name}`;
+                        }
+                    } else {
+                        alert(data.message || 'Failed to update profile');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to update profile. Please try again.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
