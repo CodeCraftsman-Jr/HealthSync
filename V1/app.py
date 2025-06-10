@@ -40,6 +40,22 @@ def medical_imaging():
 def blood_bank():
     return render_template('blood_bank.html')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
+@app.route('/hospital-dashboard')
+def hospital_dashboard():
+    return render_template('hospital_dashboard.html')
+
+@app.route('/donor-dashboard')
+def donor_dashboard():
+    return render_template('donor_dashboard.html')
+
 @app.route('/api/datasets')
 def get_datasets():
     """Get list of available datasets"""

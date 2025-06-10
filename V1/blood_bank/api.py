@@ -275,14 +275,14 @@ def api_get_donation_history(current_user):
     # Only donors can view their donation history
     if not isinstance(current_user, Donor):
         return jsonify({'success': False, 'message': 'Only donors can view their donation history'}), 403
-    
+
     try:
         donations = db_session.query(BloodDonation).filter_by(donor_id=current_user.id).all()
-        
+
         # Get hospital names
         hospital_ids = [donation.hospital_id for donation in donations]
         hospitals = {h.id: h.name for h in db_session.query(Hospital).filter(Hospital.id.in_(hospital_ids)).all()}
-        
+
         donations_data = [{
             'id': donation.id,
             'hospital_id': donation.hospital_id,
@@ -291,10 +291,68 @@ def api_get_donation_history(current_user):
             'quantity_ml': donation.quantity_ml,
             'donation_date': donation.donation_date.isoformat()
         } for donation in donations]
-        
+
         return jsonify({'success': True, 'donations': donations_data}), 200
     except Exception as e:
         return jsonify({'success': False, 'message': f'Error retrieving donation history: {str(e)}'}), 400
+
+@blood_bank_api.route('/donor/profile', methods=['GET'])
+@token_required
+def api_get_donor_profile(current_user):
+    # Only donors can view their profile
+    if not isinstance(current_user, Donor):
+        return jsonify({'success': False, 'message': 'Only donors can view their profile'}), 403
+
+    try:
+        # Check eligibility
+        is_eligible = True
+        if current_user.last_donation_date:
+            three_months_ago = datetime.datetime.utcnow() - datetime.timedelta(days=90)
+            is_eligible = current_user.last_donation_date <= three_months_ago
+
+        donor_data = {
+            'id': current_user.id,
+            'name': current_user.name,
+            'email': current_user.email,
+            'blood_type': current_user.blood_type.value,
+            'address': current_user.address,
+            'contact_number': current_user.contact_number,
+            'date_of_birth': current_user.date_of_birth.isoformat(),
+            'last_donation_date': current_user.last_donation_date.isoformat() if current_user.last_donation_date else None,
+            'is_eligible': is_eligible
+        }
+
+        return jsonify({'success': True, 'donor': donor_data}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Error retrieving profile: {str(e)}'}), 400
+
+@blood_bank_api.route('/urgent-requests', methods=['GET'])
+def api_get_urgent_requests():
+    """Get urgent blood requests for notifications"""
+    try:
+        # Get requests with urgency level 4 or 5 that are still pending
+        urgent_requests = db_session.query(BloodRequest).filter(
+            BloodRequest.urgency_level >= 4,
+            BloodRequest.status == 'pending'
+        ).all()
+
+        # Get hospital names
+        hospital_ids = [req.hospital_id for req in urgent_requests]
+        hospitals = {h.id: h.name for h in db_session.query(Hospital).filter(Hospital.id.in_(hospital_ids)).all()}
+
+        requests_data = [{
+            'id': req.id,
+            'hospital_id': req.hospital_id,
+            'hospital_name': hospitals.get(req.hospital_id, 'Unknown Hospital'),
+            'blood_type': req.blood_type.value,
+            'quantity_ml': req.quantity_ml,
+            'urgency_level': req.urgency_level,
+            'request_date': req.request_date.isoformat()
+        } for req in urgent_requests]
+
+        return jsonify({'success': True, 'urgent_requests': requests_data}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Error retrieving urgent requests: {str(e)}'}), 400
 
 # Public routes
 @blood_bank_api.route('/hospitals', methods=['GET'])

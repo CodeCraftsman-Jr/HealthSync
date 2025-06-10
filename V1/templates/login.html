@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - HealthSync</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .login-form {
+            padding: 3rem;
+        }
+        .login-image {
+            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+            border: none;
+            padding: 12px 30px;
+        }
+        .form-control:focus {
+            border-color: #0dcaf0;
+            box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="login-container row g-0">
+                    <div class="col-lg-6 login-image">
+                        <div class="text-center">
+                            <h2 class="mb-4">Welcome to HealthSync</h2>
+                            <p class="lead">Integrated Healthcare Platform</p>
+                            <div class="mt-4">
+                                <i class="fas fa-heartbeat fa-3x mb-3"></i>
+                                <p>Combining AI-powered medical imaging with efficient blood bank management</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="login-form">
+                            <h3 class="text-center mb-4">Sign In</h3>
+                            
+                            <!-- User Type Selection -->
+                            <div class="mb-4">
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="userType" id="hospital" value="hospital" checked>
+                                    <label class="btn btn-outline-primary" for="hospital">Hospital</label>
+                                    
+                                    <input type="radio" class="btn-check" name="userType" id="donor" value="donor">
+                                    <label class="btn btn-outline-primary" for="donor">Donor</label>
+                                </div>
+                            </div>
+
+                            <form id="loginForm">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                                
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-100 mb-3">Sign In</button>
+                            </form>
+                            
+                            <div class="text-center">
+                                <p class="mb-2">Don't have an account?</p>
+                                <a href="/register" class="btn btn-outline-primary">Register Now</a>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <a href="/" class="text-muted">← Back to Home</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(`/api/blood-bank/login-${userType}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userType', userType);
+                    
+                    if (userType === 'hospital') {
+                        localStorage.setItem('hospitalId', data.hospital_id);
+                        window.location.href = '/hospital-dashboard';
+                    } else {
+                        localStorage.setItem('donorId', data.donor_id);
+                        window.location.href = '/donor-dashboard';
+                    }
+                } else {
+                    alert('Login failed: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>
